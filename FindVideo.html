@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>UI mock</title>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script> 
+<link type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/themes/redmond/jquery-ui.css" rel="stylesheet" />
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.js"></script> 
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+
+<!-- Optional theme -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap-theme.min.css">
+
+<!-- Latest compiled and minified JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+
+<script language="javascript"> 
+
+	function searchVideo(){
+		var xhr= new XMLHttpRequest();
+		var dataApikey = "AIzaSyBloTHZ3LY41nw3wuZTUTx6kFBTE0G21lw";
+    var type = document.getElementById("type").value;
+		var query =  document.getElementById("query").value;
+ 		var pageToken = "";
+ 		var order = document.getElementById("order").value;
+    var publishedBefore =  document.getElementById("publishedBefore").value;
+    var publishedAfter =  document.getElementById("publishedAfter").value;    
+
+//    var onBehalfOfContentOwner = document.getElementById("publishedAfter").value;
+    var onBehalfOfContentOwner = "Toei_Animation_JP"; // debug
+    var videoId = "wcXUaGsOVAQ"; // debug
+    var viewClaimed = document.getElementById("viewClaimed").checked;
+
+    if(viewClaimed) {
+       document.getElementById('list').innerHTML = "checked";   
+       return;
+    }
+    var cidApikey = "AIzaSyDBi5QOTpK5ID2d28W7PCeXTODIoHeJ_ts";
+    var requestUrl = "https://www.googleapis.com/youtube/partner/v1/claims?key="
+                               + dataApikey
+                               + "&onBehalfOfContentOwner="
+                               + onBehalfOfContentOwner
+                               + "&videoId=" 
+                               + videoId;
+/*
+		var requestUrl = "https://www.googleapis.com/youtube/v3/search?part=snippet"
+                               + "&key="
+                               + dataApikey
+                               + "&pageToken="
+                               +  pageToken
+                               + "&type=video&maxResults=50&order="
+                               + order
+                               + "&" + type + "="  // q or topicId
+                               + query;
+    if(publishedBefore.length > 0) {
+      requestUrl = requestUrl + "&publishedBefore=" + publishedBefore;
+    }                          
+   if(publishedAfter.length > 0) {
+      requestUrl = requestUrl + "&publishedAfter=" + publishedAfter;
+    }                          
+
+*/
+		xhr.open("GET",requestUrl);
+		xhr.send();
+		document.getElementById('list').innerHTML = requestUrl;		
+		xhr.onload=function(ev){
+//      var result = "";
+
+      var result =  requestUrl + "<br />" + xhr.responseText;
+      document.getElementById('list').innerHTML = result;  
+      return;
+
+			//JSONの解析
+       json = JSON.parse(xhr.responseText);
+      for (i=0; i<json.items.length; i++) {
+        var title = json.items[i].snippet.title;
+        var videoId = json.items[i].id.videoId;
+
+        result += "<li>" + title + 
+        "<br />" + 
+//         " (" + duration + ")<br />" +   //length_seocons
+//        "<a href=\"#\" \"https://www.youtube.com/watch?v=" +  items[0] + "\" >" +
+        "<a href=\"#\" onclick=\"openYouTube('" +   videoId + "')\">" +
+
+        "<img src=\"https://i.ytimg.com/vi/" +  videoId + "/1.jpg\">" +
+        "<img src=\"https://i.ytimg.com/vi/" +  videoId  + "/2.jpg\">" +
+        "<img src=\"https://i.ytimg.com/vi/" + videoId + "/3.jpg\">" +
+        "</a>"   +
+//        "views: " + items[3] +
+//        ", published: " + items[4] + "&nbsp;&nbsp;&nbsp; OK </input>" + 
+        "<input type=radio name=id_" + videoId +  " value=Block> ブロック </input>" + 
+        "<input type=radio name=id_" + videoId +  " value=Takedown>削除 </input>" + 
+        "<input type=radio name=id_" + videoId +  " value=OtherClaims>その他 </input>" + 
+        "";
+        "</li>"; 
+      }
+      document.getElementById('list').innerHTML = result;   
+
+		};
+
+
+//		document.getElementById('list').innerHTML = "loaded";
+	}
+
+function openYouTube(id){ 
+      //YouTube Player Parameters 
+      var width = 640; 
+      var height = 505; 
+      var FullScreen = "yes"; 
+      var AutoPlay = "yes"; 
+      var HighDef = "yes"; 
+      
+      //Calculate Page width and height 
+      var pageWidth = window.innerWidth; 
+      var pageHeight = window.innerHeight; 
+      if (typeof pageWidth != "number"){ 
+      if (document.compatMode == "CSS1Compat"){ 
+            pageWidth = document.documentElement.clientWidth; 
+            pageHeight = document.documentElement.clientHeight; 
+      } else { 
+            pageWidth = document.body.clientWidth; 
+            pageHeight = document.body.clientHeight; 
+            } 
+      } 
+      // Make Background visible... 
+      var divbg = document.getElementById('bg'); 
+      divbg.style.visibility = "visible"; 
+      
+      //Create dynamic Div container for YouTube Popup Div 
+      var divobj = document.createElement('div'); 
+      divobj.setAttribute('id',id); // Set id to YouTube id 
+      divobj.className = "popup"; 
+      divobj.style.visibility = "visible"; 
+      var divWidth = width + 4; 
+      var divHeight = height + 20; 
+      divobj.style.width = divWidth + "px"; 
+      divobj.style.height = divHeight + "px"; 
+      var divLeft = (pageWidth - divWidth) / 2; 
+      var divTop = (pageHeight - divHeight) / 2 - 10; 
+      //Set Left and top coordinates for the div tag 
+      divobj.style.left = divLeft + "px"; 
+      divobj.style.top = divTop + "px"; 
+      
+      //Create dynamic Close Button Div 
+      var closebutton = document.createElement('div'); 
+      closebutton.style.visibility = "visible"; 
+      closebutton.innerHTML = "<span onclick=\"closeYouTube('" + id +"')\" class=\"close_button\">X</span>"; 
+      //Add Close Button Div to YouTube Popup Div container 
+      divobj.appendChild(closebutton); 
+
+      //Create dynamic YouTube Div 
+      var ytobj = document.createElement('div'); 
+      ytobj.setAttribute('id', "yt" + id); 
+      ytobj.className = "ytcontainer"; 
+      ytobj.style.width = width + "px"; 
+      ytobj.style.height = height + "px"; 
+      if (FullScreen == "yes") FullScreen="&fs=1"; else FullScreen="&fs=0"; 
+      if (AutoPlay == "yes") AutoPlay="&autoplay=1"; else AutoPlay="&autoplay=0"; 
+      if (HighDef == "yes") HighDef="&hd=1"; else HighDef="&hd=0"; 
+      var URL = "http://www.youtube.com/v/" + id + "&hl=en&rel=0&showsearch=0" + FullScreen + AutoPlay + HighDef; 
+      var YouTube = "<object width=\"" + width + "\" height=\"" + height + "\">"; 
+      YouTube += "<param name=\"movie\" value=\"" + URL + "\"></param>"; 
+      YouTube += "<param name=\"allowFullScreen\" value=\"true\"></param><param name=\"allowscriptaccess\" value=\"always\"></param>"; 
+      YouTube += "<embed src=\"" + URL + "\" type=\"application/x-shockwave-flash\" "; 
+      YouTube += "allowscriptaccess=\"always\" allowfullscreen=\"true\" width=\"" + width + "\" height=\"" + height + "\"></embed></object>"; 
+      ytobj.innerHTML = YouTube; 
+      //Add YouTube Div to YouTube Popup Div container 
+      divobj.appendChild(ytobj); 
+      
+      //Add YouTube Popup Div container to HTML BODY 
+      document.body.appendChild(divobj); 
+} 
+function closeYouTube(id){ 
+      var divbg = document.getElementById('bg'); 
+      divbg.style.visibility = "hidden"; 
+      var divobj = document.getElementById(id); 
+      var ytobj = document.getElementById("yt" + id); 
+      divobj.removeChild(ytobj); //remove YouTube Div 
+      document.body.removeChild(divobj); // remove Popup Div 
+} 
+</script>
+<style type="text/css"> 
+<!-- 
+.popup { 
+      position: absolute; 
+      z-index: 2; 
+} 
+.popup_bg { 
+      position: absolute;     visibility: hidden; 
+      height: 100%; width: 100%; 
+      filter: alpha(opacity=70); /* for IE */ 
+      opacity: 0.7; /* CSS3 standard */ 
+      left: 0px; top: 0px; 
+      background-color: #999; 
+      z-index: 1; 
+} 
+.ytcontainer { 
+      border: 2px solid #666; 
+      clear: both; 
+} 
+.close_button { 
+      font-family: Verdana, Geneva, sans-serif; 
+      font-size: small; font-weight: bold; 
+      color: #666; text-decoration: none; 
+      display: block; float: right; 
+      background-color: #FFF; 
+      z-index: 3; cursor: default; 
+      border: 2px solid #666; 
+      margin-bottom: -2px; 
+      padding: 0px 3px 0px 3px; 
+} 
+body { margin: 0px; } 
+--> 
+</style>
+
+
+<style type="text/css">
+
+a img{ border-style: solid; }
+table tr td { border:1px solid; }
+
+
+</style>
+
+</head>
+
+<!-- <body onload="onLoad()"> -->
+<body>
+
+<select name="type" id="type" size="1">
+<option value="q">検索して見つける</option>
+<option value="topicId">トピックIDで見つける</option>
+</select>
+<input type="text" id="query" name="query" size="256">
+<br />
+オプション設定
+並べ替え: 
+<select name="order" id="order" size="1">
+<option value="date">アップロード日</option>
+<option value="viewCount">視聴回数</option>
+<option value="rating">評価</option>
+<option value="relevance">関連性</option>
+<!--- <option value="title">タイトル</option> -->
+</select><br />
+アップロード日:(例: 2015-06-01T00:00:00Z) <br />
+<input type="text" name="publishedBefore" id="publishedBefore" size="256">より前<br />
+<input type="text" name="publishedAfter" id="publishedAfter" size="256">より後<br />
+
+動画の長さ:  (検索後にフィルタ)
+<input type="text" name="durationLonger" id="durationLonger" size="10">秒より長い<br />
+<input type="text" name="durationShorter" id="durationShorter" size="10">秒より短い<br />
+長さ順で表示する
+<input type="checkbox" name="sortDuration" id="sortDuration">
+<br />
+申し立て済み動画を表示: (checkbox)
+<input type="checkbox" name="viewClaimed" id="viewClaimed">
+コンテンツ所有者:
+<input type="text" id="onBehalfOfContentOwner" name="onBehalfOfContentOwner" size="64">
+<br />
+<br />
+<!-- <br />
+もしくは
+<input type="file" id="files" name="files" mutliple/>
+-->
+<br />
+<input type="button" value="結果を表示" onClick="searchVideo()">
+
+<hr />　
+<output id="list"></output>
+
+
+
+<div id="bg" class="popup_bg"></div>
+
+
+    <!--Add a button for the user to click to initiate auth sequence -->
+    <button id="authorize-button" style="visibility: hidden">Authorize</button>
+    <script type="text/javascript">
+      // Enter a client ID for a web application from the Google Developer Console.
+      // The provided clientId will only work if the sample is run directly from
+      // https://google-api-javascript-client.googlecode.com/hg/samples/authSample.html
+      // In your Developer Console project, add a JavaScript origin that corresponds to the domain
+      // where you will be running the script.
+      var clientId = '113670351014-m4b78go9tqn40r6snf8090j074uc39j4.apps.googleusercontent.com';
+      // Enter the API key from the Google Develoepr Console - to handle any unauthenticated
+      // requests in the code.
+      // The provided key works for this sample only when run from
+      // https://google-api-javascript-client.googlecode.com/hg/samples/authSample.html
+      // To use in your own application, replace this API key with your own.
+      var apiKey = 'AIzaSyDBi5QOTpK5ID2d28W7PCeXTODIoHeJ_ts';
+      // To enter one or more authentication scopes, refer to the documentation for the API.
+      var scopes = 'https://www.googleapis.com/auth/plus.me';
+      // Use a button to handle authentication the first time.
+      function handleClientLoad() {
+        gapi.client.setApiKey(apiKey);
+        window.setTimeout(checkAuth,1);
+      }
+      function checkAuth() {
+        gapi.auth.authorize({client_id: clientId, scope: scopes, immediate: true}, handleAuthResult);
+      }
+      function handleAuthResult(authResult) {
+        var authorizeButton = document.getElementById('authorize-button');
+        if (authResult && !authResult.error) {
+          authorizeButton.style.visibility = 'hidden';
+          makeApiCall();
+        } else {
+          authorizeButton.style.visibility = '';
+          authorizeButton.onclick = handleAuthClick;
+        }
+      }
+      function handleAuthClick(event) {
+        gapi.auth.authorize({client_id: clientId, scope: scopes, immediate: false}, handleAuthResult);
+        return false;
+      }
+      // Load the API and make an API call.  Display the results on the screen.
+      function makeApiCall() {
+        gapi.client.load('plus', 'v1', function() {
+          var request = gapi.client.plus.people.get({
+            'userId': 'me'
+          });
+          request.execute(function(resp) {
+            var heading = document.createElement('h4');
+            var image = document.createElement('img');
+            image.src = resp.image.url;
+            heading.appendChild(image);
+            heading.appendChild(document.createTextNode(resp.displayName));
+            document.getElementById('content').appendChild(heading);
+          });
+        });
+      }
+    </script>
+    <script src="https://apis.google.com/js/client.js?onload=handleClientLoad"></script>
+    <div id="content"></div>
+    <p>Retrieves your profile name using the Google Plus API.</p> 
+</body>
