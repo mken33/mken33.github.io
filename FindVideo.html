@@ -150,7 +150,7 @@
       else {
 	isVideoClaimed[videoId] = true;
       } 
-
+	console.log(videoId + ":" +isVideoClaimed[videoId])
     }, function(reason) {
       console.log('Error: ' + reason.result.error.message);
     });
