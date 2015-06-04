@@ -23,6 +23,7 @@
   var dataApikey = "AIzaSyBloTHZ3LY41nw3wuZTUTx6kFBTE0G21lw";
   var isVideoClaimed = {};
   var videoInfos = []; //  {videoId:$vdieoId ,publishDate: $publishDate, claimed: $claimed, ... }}
+  var claimedVideos = [];
   var onBehalfOfContentOwner = "";
   var claimLoaded = false; //debug
   var videoLoaded = false;
@@ -226,15 +227,27 @@
   }
   // Load the API and make an API call.  Display the results on the screen.
   function getClaimedVideos(videoIds) {
-
     var restRequest = gapi.client.request({
       'path': '/youtube/partner/v1/claims',
       'params': {'onBehalfOfContentOwner': onBehalfOfContentOwner, 'videoId': videoIds}
     });
     restRequest.then(function(resp) {
+      claimedVideos = []; // reset
 //      console.log(resp.result);
-    for(i = 0; i < resp.result.items.length; i++) {
-      console.log(resp.result.items[i].videoId)
+      for(i = 0; i < resp.result.items.length; i++) {
+//      console.log(resp.result.items[i].videoId);
+        var alreadyListed = false;
+        for(j = 0; j < claimedVideos.length; j++) {
+          if(claimedVideos[j] == resp.result.items[i].videoId){
+            alreadyListed = true;
+            break;
+          } 
+          if(!alreadyListed) {
+            claimedVideos.push(resp.result.items[i].videoId);
+          }
+        }
+        console.log(claimedVideos);
+      }
     }
       
     }, function(reason) {
