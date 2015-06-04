@@ -51,18 +51,6 @@
     onBehalfOfContentOwner = "Toei_Animation_JP";
     var viewClaimed = document.getElementById("viewClaimed").checked;
 
-    if(viewClaimed) {
-       document.getElementById('list').innerHTML = "checked";   
-       return;
-    }
-/*
-    var requestUrl = "https://www.googleapis.com/youtube/partner/v1/claims?key="
-                               + dataApikey
-                               + "&onBehalfOfContentOwner="
-                               + onBehalfOfContentOwner
-                               + "&videoId=" 
-                               + videoId;
-*/
     var requestUrl = "https://www.googleapis.com/youtube/v3/search?part=snippet"
                                + "&key="
                                + dataApikey
@@ -429,7 +417,7 @@ table tr td { border:1px solid; }
 <input type="checkbox" name="sortDuration" id="sortDuration">
 <br />
 申し立て済み動画を表示:
-<input type="checkbox" name="viewClaimed" id="viewClaimed" checked>
+<input type="checkbox" name="viewClaimed" id="viewClaimed" checked="checked">
 コンテンツ所有者:
 <input type="text" id="onBehalfOfContentOwner" name="onBehalfOfContentOwner" size="64">
 <!--Add a button for the user to click to initiate auth sequence -->
