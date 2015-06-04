@@ -76,7 +76,7 @@
       for (i=0; i<json.items.length; i++) {
         var title = json.items[i].snippet.title;
         var videoId = json.items[i].id.videoId;
-      	isClaimed(videoId);
+      	isClaimed(videoId, onBehalfOfContentOwner);
 
         result += "<li>" + title + 
 //        " : " + isClaimed(videoId) +
@@ -137,11 +137,11 @@
     return false;
   }
   // Load the API and make an API call.  Display the results on the screen.
-  function isClaimed(videoId) {
+  function isClaimed(videoId, onBehalfOfContentOwner) {
 
     var restRequest = gapi.client.request({
       'path': '/youtube/partner/v1/claims',
-      'params': {'onBehalfOfContentOwner': 'Toei_Animation_JP', 'videoId': 'GdXBpjtKFqU'}
+      'params': {'onBehalfOfContentOwner': onBehalfOfContentOwner, 'videoId': videoId}
     });
     restRequest.then(function(resp) {
       console.log(resp.result.pageInfo.totalResults);
