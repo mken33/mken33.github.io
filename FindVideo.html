@@ -36,13 +36,14 @@
        return;
     }
     var cidApikey = "AIzaSyDBi5QOTpK5ID2d28W7PCeXTODIoHeJ_ts";
+/*
     var requestUrl = "https://www.googleapis.com/youtube/partner/v1/claims?key="
                                + dataApikey
                                + "&onBehalfOfContentOwner="
                                + onBehalfOfContentOwner
                                + "&videoId=" 
                                + videoId;
-/*
+*/
 		var requestUrl = "https://www.googleapis.com/youtube/v3/search?part=snippet"
                                + "&key="
                                + dataApikey
@@ -59,16 +60,17 @@
       requestUrl = requestUrl + "&publishedAfter=" + publishedAfter;
     }                          
 
-*/
+
 		xhr.open("GET",requestUrl);
 		xhr.send();
 		document.getElementById('list').innerHTML = requestUrl;		
 		xhr.onload=function(ev){
-//      var result = "";
+       var result = "";
 
-      var result =  requestUrl + "<br />" + xhr.responseText;
-      document.getElementById('list').innerHTML = result;  
-      return;
+ //     var result =  requestUrl + "<br />" + xhr.responseText;
+
+//      document.getElementById('list').innerHTML = result;  
+ //     return;
 
 			//JSONの解析
        json = JSON.parse(xhr.responseText);
@@ -87,7 +89,8 @@
         "<img src=\"https://i.ytimg.com/vi/" + videoId + "/3.jpg\">" +
         "</a>"   +
 //        "views: " + items[3] +
-//        ", published: " + items[4] + "&nbsp;&nbsp;&nbsp; OK </input>" + 
+//        ", published: " + items[4] + "&nbsp;&nbsp;&nbsp;" + 
+        "<input type=radio name=id_" + videoId +  " value=Ok> OK </input>" + 
         "<input type=radio name=id_" + videoId +  " value=Block> ブロック </input>" + 
         "<input type=radio name=id_" + videoId +  " value=Takedown>削除 </input>" + 
         "<input type=radio name=id_" + videoId +  " value=OtherClaims>その他 </input>" + 
@@ -268,7 +271,53 @@ table tr td { border:1px solid; }
 <hr />　
 <output id="list"></output>
 
+<script>
+/*
+  function handleFileSelect(evt) {
+    var files = evt.target.files; // FileList object
 
+    for (var i = 0, f; f = files[i]; i++) {
+  
+	  	var reader = new FileReader();
+	  	reader.readAsText(f);
+		  
+		 reader.onload = function(ev){
+		 var lines = reader.result.split('\n');
+		 var result = "<ul>";
+  		 for (var j = 1; j < lines.length; j++) {  //ignore first line
+  //		 for (var j = 0; j < 10; j++) {
+  			 var items = lines[j].split('\t');
+  			 var duration = Math.floor(items[5] / 60) + ":" + (items[5] % 60)
+  		 	result += "<li>" + items[1] + 
+  		 		 " (" + duration + ")<br />" +   //length_seocons
+  //				"<a href=\"#\" \"https://www.youtube.com/watch?v=" +  items[0] + "\" >" +
+  				"<a href=\"#\" onclick=\"openYouTube('" +   items[0] + "')\">" +
+
+  				"<img src=\"https://i.ytimg.com/vi/" +  items[0] + "/1.jpg\">" +
+  				"<img src=\"https://i.ytimg.com/vi/" +  items[0]  + "/2.jpg\">" +
+  				"<img src=\"https://i.ytimg.com/vi/" + items[0] + "/3.jpg\">" +
+  				"</a>"   +
+  				"views: " + items[3] +
+  				", published: " + items[4] + "&nbsp;&nbsp;&nbsp; OK </input>" + 
+  				"<input type=radio name=id_" + items[0] +  " value=Block> ブロック </input>" + 
+  				"<input type=radio name=id_" + items[0] +  " value=Takedown>削除 </input>" + 
+  				"<input type=radio name=id_" + items[0] +  " value=OtherClaims>その他 </input>" + 
+   				"";
+   				"</li>";
+  				
+
+  		 }
+  		 	result += "</ul>"
+  		 document.getElementById('list').innerHTML = result;
+  	  }
+    }
+  //  document.getElementById('list').innerHTML = '<ul>' + output.join('') + '</ul>';
+  }
+
+//  document.getElementById('files').addEventListener('change', handleFileSelect, false);
+*/
+
+</script>
 
 <div id="bg" class="popup_bg"></div>
 
@@ -289,7 +338,7 @@ table tr td { border:1px solid; }
       // To use in your own application, replace this API key with your own.
       var apiKey = 'AIzaSyDBi5QOTpK5ID2d28W7PCeXTODIoHeJ_ts';
       // To enter one or more authentication scopes, refer to the documentation for the API.
-      var scopes = 'https://www.googleapis.com/auth/plus.me';
+      var scopes = 'https://www.googleapis.com/auth/youtubepartner';
       // Use a button to handle authentication the first time.
       function handleClientLoad() {
         gapi.client.setApiKey(apiKey);
@@ -314,6 +363,26 @@ table tr td { border:1px solid; }
       }
       // Load the API and make an API call.  Display the results on the screen.
       function makeApiCall() {
+
+        var requestUrl =  "https://www.googleapis.com/youtube/partner/v1/claims?onBehalfOfContentOwner=Toei_Animation_JP&videoId=GdXBpjtKFqU&key=AIzaSyDBi5QOTpK5ID2d28W7PCeXTODIoHeJ_ts";
+      xhr.open("GET",requestUrl);
+      xhr.send();
+      document.getElementById('list').innerHTML = requestUrl;   
+     xhr.onload=function(ev){
+       var result = "";
+
+     var result =  requestUrl + "<br />" + xhr.responseText;
+
+      document.getElementById('list').innerHTML = result;  
+ 
+ /*
+        gapi.client.request({
+          'path': '/youtube/partner/v1/claims?onBehalfOfContentOwner=Toei_Animation_JP&videoId=GdXBpjtKFqU',
+          'method': 'GET',
+          'body': resource,
+          'callback': writeResponse
+        });
+        // 
         gapi.client.load('plus', 'v1', function() {
           var request = gapi.client.plus.people.get({
             'userId': 'me'
@@ -327,6 +396,7 @@ table tr td { border:1px solid; }
             document.getElementById('content').appendChild(heading);
           });
         });
+*/
       }
     </script>
     <script src="https://apis.google.com/js/client.js?onload=handleClientLoad"></script>
