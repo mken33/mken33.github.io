@@ -199,7 +199,6 @@
       }
       document.getElementById('list').innerHTML = result;   
 
-
    }
 
 
@@ -233,13 +232,7 @@
       'params': {'onBehalfOfContentOwner': onBehalfOfContentOwner, 'videoId': videoIds}
     });
     restRequest.then(function(resp) {
-      if(resp.result.pageInfo.totalResults > 0) {
-        isVideoClaimed[videoId] = true;
-      }
-      else {
-        isVideoClaimed[videoId] = false;
-      } 
-      console.log(videoId + ":" +isVideoClaimed[videoId])
+      console.log(resp.result);
     }, function(reason) {
       console.log('Error: ' + reason.result.error.message);
     });
