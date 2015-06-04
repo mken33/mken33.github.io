@@ -86,7 +86,6 @@
 //         " (" + duration + ")<br />" +   //length_seocons
 //        "<a href=\"#\" \"https://www.youtube.com/watch?v=" +  items[0] + "\" >" +
         "<a href=\"#\" onclick=\"openYouTube('" +   videoId + "')\">" +
-
         "<img src=\"https://i.ytimg.com/vi/" +  videoId + "/1.jpg\">" +
         "<img src=\"https://i.ytimg.com/vi/" +  videoId  + "/2.jpg\">" +
         "<img src=\"https://i.ytimg.com/vi/" + videoId + "/3.jpg\">" +
@@ -96,8 +95,7 @@
         "<input type=radio name=id_" + videoId +  " value=Ok> OK </input>" + 
         "<input type=radio name=id_" + videoId +  " value=Block> ブロック </input>" + 
         "<input type=radio name=id_" + videoId +  " value=Takedown>削除 </input>" + 
-        "<input type=radio name=id_" + videoId +  " value=OtherClaims>その他 </input>" + 
-        "";
+        "<input type=radio name=id_" + videoId +  " value=OtherClaims>その他 </input>" +
         "</li>"; 
       }
       document.getElementById('list').innerHTML = result;   
