@@ -399,7 +399,7 @@ table tr td { border:1px solid; }
 
 <!-- <body onload="onLoad()"> -->
 <body>
-
+<h2> 動画検索ツール</h2>
 <select name="type" id="type" size="1">
 <option value="q">検索して見つける</option>
 <option value="topicId">トピックIDから検索して見つける</option>
@@ -426,12 +426,12 @@ table tr td { border:1px solid; }
 長さ順で表示する
 <input type="checkbox" name="sortDuration" id="sortDuration">
 <br />
-申し立て済み動画を表示: (checkbox)
-<input type="checkbox" name="viewClaimed" id="viewClaimed">
+申し立て済み動画を表示:
+<input type="checkbox" name="viewClaimed" id="viewClaimed" checked>
 コンテンツ所有者:
 <input type="text" id="onBehalfOfContentOwner" name="onBehalfOfContentOwner" size="64">
 <!--Add a button for the user to click to initiate auth sequence -->
-<button id="authorize-button" style="visibility: hidden">Authorize</button>
+<button id="authorize-button" style="visibility: hidden">認証</button>
 
 <br />
 <br />
