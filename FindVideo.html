@@ -16,6 +16,8 @@
 
 <script language="javascript"> 
 
+  var cidApikey = "AIzaSyDBi5QOTpK5ID2d28W7PCeXTODIoHeJ_ts";
+
 	function searchVideo(){
 		var xhr= new XMLHttpRequest();
 		var dataApikey = "AIzaSyBloTHZ3LY41nw3wuZTUTx6kFBTE0G21lw";
@@ -35,7 +37,6 @@
        document.getElementById('list').innerHTML = "checked";   
        return;
     }
-    var cidApikey = "AIzaSyDBi5QOTpK5ID2d28W7PCeXTODIoHeJ_ts";
 /*
     var requestUrl = "https://www.googleapis.com/youtube/partner/v1/claims?key="
                                + dataApikey
@@ -68,7 +69,6 @@
        var result = "";
 
  //     var result =  requestUrl + "<br />" + xhr.responseText;
-
 //      document.getElementById('list').innerHTML = result;  
  //     return;
 
@@ -100,11 +100,55 @@
       document.getElementById('list').innerHTML = result;   
 
 		};
-
-
-//		document.getElementById('list').innerHTML = "loaded";
 	}
 
+
+  var clientId = '113670351014-m4b78go9tqn40r6snf8090j074uc39j4.apps.googleusercontent.com';
+  // Enter the API key from the Google Develoepr Console - to handle any unauthenticated
+  // requests in the code.
+  // The provided key works for this sample only when run from
+  // https://google-api-javascript-client.googlecode.com/hg/samples/authSample.html
+  // To use in your own application, replace this API key with your own.
+  var scopes = 'https://www.googleapis.com/auth/youtubepartner';
+  // Use a button to handle authentication the first time.
+  function handleClientLoad() {
+    gapi.client.setApiKey(cidApikey);
+    window.setTimeout(checkAuth,1);
+  }
+  function checkAuth() {
+    gapi.auth.authorize({client_id: clientId, scope: scopes, immediate: true}, handleAuthResult);
+  }
+  function handleAuthResult(authResult) {
+    var authorizeButton = document.getElementById('authorize-button');
+    if (authResult && !authResult.error) {
+      authorizeButton.style.visibility = 'hidden';
+      makeApiCall();
+    } else {
+      authorizeButton.style.visibility = '';
+      authorizeButton.onclick = handleAuthClick;
+    }
+  }
+  function handleAuthClick(event) {
+    gapi.auth.authorize({client_id: clientId, scope: scopes, immediate: false}, handleAuthResult);
+    return false;
+  }
+  // Load the API and make an API call.  Display the results on the screen.
+  function makeApiCall() {
+
+    var restRequest = gapi.client.request({
+      'path': '/youtube/partner/v1/claims',
+      'params': {'onBehalfOfContentOwner': 'Toei_Animation_JP', 'videoId': 'GdXBpjtKFqU'}
+    });
+    restRequest.then(function(resp) {
+      console.log(resp.result);
+      document.getElementById('list').innerHTML = resp.result;   
+    }, function(reason) {
+      console.log('Error: ' + reason.result.error.message);
+    });
+  }
+
+
+/** YouTube popup helper */
 function openYouTube(id){ 
       //YouTube Player Parameters 
       var width = 640; 
@@ -172,16 +216,21 @@ function openYouTube(id){
       
       //Add YouTube Popup Div container to HTML BODY 
       document.body.appendChild(divobj); 
-} 
-function closeYouTube(id){ 
+  } 
+  function closeYouTube(id){ 
       var divbg = document.getElementById('bg'); 
       divbg.style.visibility = "hidden"; 
       var divobj = document.getElementById(id); 
       var ytobj = document.getElementById("yt" + id); 
       divobj.removeChild(ytobj); //remove YouTube Div 
       document.body.removeChild(divobj); // remove Popup Div 
-} 
-</script>
+  } 
+
+
+
+
+  </script>
+  <script src="https://apis.google.com/js/client.js?onload=handleClientLoad"></script>
 <style type="text/css"> 
 <!-- 
 .popup { 
@@ -259,6 +308,9 @@ table tr td { border:1px solid; }
 <input type="checkbox" name="viewClaimed" id="viewClaimed">
 コンテンツ所有者:
 <input type="text" id="onBehalfOfContentOwner" name="onBehalfOfContentOwner" size="64">
+<!--Add a button for the user to click to initiate auth sequence -->
+<button id="authorize-button" style="visibility: hidden">Authorize</button>
+
 <br />
 <br />
 <!-- <br />
@@ -322,63 +374,6 @@ table tr td { border:1px solid; }
 <div id="bg" class="popup_bg"></div>
 
 
-    <!--Add a button for the user to click to initiate auth sequence -->
-    <button id="authorize-button" style="visibility: hidden">Authorize</button>
-    <script type="text/javascript">
-      // Enter a client ID for a web application from the Google Developer Console.
-      // The provided clientId will only work if the sample is run directly from
-      // https://google-api-javascript-client.googlecode.com/hg/samples/authSample.html
-      // In your Developer Console project, add a JavaScript origin that corresponds to the domain
-      // where you will be running the script.
-      var clientId = '113670351014-m4b78go9tqn40r6snf8090j074uc39j4.apps.googleusercontent.com';
-      // Enter the API key from the Google Develoepr Console - to handle any unauthenticated
-      // requests in the code.
-      // The provided key works for this sample only when run from
-      // https://google-api-javascript-client.googlecode.com/hg/samples/authSample.html
-      // To use in your own application, replace this API key with your own.
-      var apiKey = 'AIzaSyDBi5QOTpK5ID2d28W7PCeXTODIoHeJ_ts';
-      // To enter one or more authentication scopes, refer to the documentation for the API.
-      var scopes = 'https://www.googleapis.com/auth/youtubepartner';
-      // Use a button to handle authentication the first time.
-      function handleClientLoad() {
-        gapi.client.setApiKey(apiKey);
-        window.setTimeout(checkAuth,1);
-      }
-      function checkAuth() {
-        gapi.auth.authorize({client_id: clientId, scope: scopes, immediate: true}, handleAuthResult);
-      }
-      function handleAuthResult(authResult) {
-        var authorizeButton = document.getElementById('authorize-button');
-        if (authResult && !authResult.error) {
-          authorizeButton.style.visibility = 'hidden';
-          makeApiCall();
-        } else {
-          authorizeButton.style.visibility = '';
-          authorizeButton.onclick = handleAuthClick;
-        }
-      }
-      function handleAuthClick(event) {
-        gapi.auth.authorize({client_id: clientId, scope: scopes, immediate: false}, handleAuthResult);
-        return false;
-      }
-      // Load the API and make an API call.  Display the results on the screen.
-      function makeApiCall() {
 
-        var restRequest = gapi.client.request({
-          'path': '/youtube/partner/v1/claims',
-          'params': {'onBehalfOfContentOwner': 'Toei_Animation_JP', 'videoId': 'kbbA9BhCTko'}
-        });
-        restRequest.then(function(resp) {
-          console.log(resp.result);
-          document.getElementById('list').innerHTML = resp.result;   
-        }, function(reason) {
-          console.log('Error: ' + reason.result.error.message);
-        });
-
-     
-    }
-    </script>
-    <script src="https://apis.google.com/js/client.js?onload=handleClientLoad"></script>
     <div id="content"></div>
-    <p>Retrieves your profile name using the Google Plus API.</p> 
 </body>
