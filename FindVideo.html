@@ -142,7 +142,7 @@
     });
     restRequest.then(function(resp) {
       console.log(resp.result);
-      if(resp.result.totalResults > 0) return true;
+      if(resp.result.pageInfo.totalResults > 0) return true;
       else return false; 
 
     }, function(reason) {
