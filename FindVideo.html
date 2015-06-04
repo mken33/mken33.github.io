@@ -15,22 +15,39 @@
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
 
 <script language="javascript"> 
+  var clientId = '113670351014-m4b78go9tqn40r6snf8090j074uc39j4.apps.googleusercontent.com';
+  var scopes = 'https://www.googleapis.com/auth/youtubepartner';
+
 
   var cidApikey = "AIzaSyDBi5QOTpK5ID2d28W7PCeXTODIoHeJ_ts";
+  var dataApikey = "AIzaSyBloTHZ3LY41nw3wuZTUTx6kFBTE0G21lw";
   var isVideoClaimed = {};
+  var videoInfos = []; //  {videoId:$vdieoId ,publishDate: $publishDate, claimed: $claimed, ... }}
+  var onBehalfOfContentOwner = "";
+  var claimLoaded = true; //debug
+  var videoLoaded = false;
 
   function searchVideo(){
-		var xhr= new XMLHttpRequest();
-		var dataApikey = "AIzaSyBloTHZ3LY41nw3wuZTUTx6kFBTE0G21lw";
+    /*
+    var videoA = {"videoId": "a", "published": "2024", "claimed": true}
+    var videoB = {"videoId": "b", "published": "2014", "claimed": false}
+    videosInfo.push(videoA);
+    videosInfo.push(videoB);
+    for (i = 0; i < videosInfo.length; i++){
+      console.log( videosInfo[i].videoId + ", published: " + videosInfo[i].published + ", claimed : "+ videosInfo[i].claimed); 
+    }
+    return;
+    */
+    var xhr= new XMLHttpRequest();
     var type = document.getElementById("type").value;
-		var query =  document.getElementById("query").value;
- 		var pageToken = "";
- 		var order = document.getElementById("order").value;
+    var query =  document.getElementById("query").value;
+    var pageToken = "";
+    var order = document.getElementById("order").value;
     var publishedBefore =  document.getElementById("publishedBefore").value;
     var publishedAfter =  document.getElementById("publishedAfter").value;    
 
 //    var onBehalfOfContentOwner = document.getElementById("onBehalfOfContentOwner").value;
-    var onBehalfOfContentOwner = "Toei_Animation_JP";
+    onBehalfOfContentOwner = "Toei_Animation_JP";
     var viewClaimed = document.getElementById("viewClaimed").checked;
 
     if(viewClaimed) {
@@ -45,7 +62,7 @@
                                + "&videoId=" 
                                + videoId;
 */
-		var requestUrl = "https://www.googleapis.com/youtube/v3/search?part=snippet"
+    var requestUrl = "https://www.googleapis.com/youtube/v3/search?part=snippet"
                                + "&key="
                                + dataApikey
                                + "&pageToken="
@@ -62,58 +79,131 @@
     }                          
 
 
-		xhr.open("GET",requestUrl);
-		xhr.send();
-		document.getElementById('list').innerHTML = requestUrl;		
-		xhr.onload=function(ev){
-       var result = "";
+    xhr.open("GET",requestUrl);
+    xhr.send();
+    document.getElementById('list').innerHTML = requestUrl;   
+    xhr.onload=function(ev){
+      videoInfos = []; // reset
+      var videoList = "";
 
  //     var result =  requestUrl + "<br />" + xhr.responseText;
 //      document.getElementById('list').innerHTML = result;  
  //     return;
 
-			//JSONの解析
-       json = JSON.parse(xhr.responseText);
+      json = JSON.parse(xhr.responseText);
       for (i=0; i<json.items.length; i++) {
         var title = json.items[i].snippet.title;
         var videoId = json.items[i].id.videoId;
-      	isClaimed(videoId, onBehalfOfContentOwner);
+//        isClaimed(videoId, onBehalfOfContentOwner);
 
-        result += "<li>" + title + 
-//        " : " + isClaimed(videoId) +
-        "<br />" + 
-//         " (" + duration + ")<br />" +   //length_seocons
-//        "<a href=\"#\" \"https://www.youtube.com/watch?v=" +  items[0] + "\" >" +
-        "<a href=\"#\" onclick=\"openYouTube('" +   videoId + "')\">" +
-        "<img src=\"https://i.ytimg.com/vi/" +  videoId + "/1.jpg\">" +
-        "<img src=\"https://i.ytimg.com/vi/" +  videoId  + "/2.jpg\">" +
-        "<img src=\"https://i.ytimg.com/vi/" + videoId + "/3.jpg\">" +
-        "</a>"   +
-//        "views: " + items[3] +
-//        ", published: " + items[4] + "&nbsp;&nbsp;&nbsp;" + 
-        "<input type=radio name=id_" + videoId +  " value=Ok> OK </input>" + 
-        "<input type=radio name=id_" + videoId +  " value=Block> ブロック </input>" + 
-        "<input type=radio name=id_" + videoId +  " value=Takedown>削除 </input>" + 
-        "<input type=radio name=id_" + videoId +  " value=OtherClaims>その他 </input>" +
-        "</li>"; 
+        videoList  += json.items[i].id.videoId;
+        videoList += ",";
+        
+
       }
-      document.getElementById('list').innerHTML = result;   
+     // document.getElementById('list').innerHTML = result;   
 //      console.log("claimed" + isVideoClaimed.length);
-       for (var pname in isVideoClaimed){
-  	console.log(pname + ":" + isVideoClaimed[pname]);	
-       }
+      videoList = videoList.substring(0, videoList.length - 1); // last , causes exceeds 50 error
+      getVideosInfo(videoList);
      };
 
    }
 
+   function getVideosInfo(videoList) {
 
-  var clientId = '113670351014-m4b78go9tqn40r6snf8090j074uc39j4.apps.googleusercontent.com';
-  // Enter the API key from the Google Develoepr Console - to handle any unauthenticated
-  // requests in the code.
-  // The provided key works for this sample only when run from
-  // https://google-api-javascript-client.googlecode.com/hg/samples/authSample.html
-  // To use in your own application, replace this API key with your own.
-  var scopes = 'https://www.googleapis.com/auth/youtubepartner';
+      var xhr= new XMLHttpRequest();
+      var requestUrl = " https://www.googleapis.com/youtube/v3/videos?part=snippet,statistics,contentDetails"
+                               + "&key="
+                               + dataApikey
+                               + "&id="
+                               +  videoList;
+
+       console.log(requestUrl)
+       xhr.open("GET",requestUrl);
+       xhr.send();
+  　   xhr.onload=function(ev){
+        var result = "";
+
+   //     var result =  requestUrl + "<br />" + xhr.responseText;
+  //      document.getElementById('list').innerHTML = result;  
+   //     return;
+
+        //JSONの解析
+        json = JSON.parse(xhr.responseText);
+        for (i=0; i<json.items.length; i++) {
+          var videoId = json.items[i].id;
+          var title = json.items[i].snippet.title;
+          var publishedAt = json.items[i].snippet.publishedAt;
+          var viewCount = json.items[i].statistics.viewCount;
+          var thumbnailsUrl = json.items[i].snippet.thumbnails.medium.url;
+          var channelId =  json.items[i].snippet.channelId;
+          var channelTitle = json.items[i].snippet.channelTitle;
+          var duration = json.items[i].contentDetails.duration;
+
+          var video = {"videoId": videoId, "title":title, "publishedAt": publishedAt, 
+                      "viewCount": viewCount, "thumbnailsUrl": thumbnailsUrl,
+                      "channelId": channelId, "channelTitle": channelTitle,
+                      "duration": duration};
+          videoInfos.push(video);
+        }
+        videoLoaded = true;
+        printVideoInfo();
+      };
+//      isClaimed(videoList);
+
+   }
+
+   function printVideoInfo(){
+    var result = "";
+    if(!claimLoaded  && !videoLoaded){
+      document.getElementById('list').innerHTML = result;   
+      return;      
+    }
+
+
+    for(i = 0; i < videoInfos.length; i++) {
+      var title = videoInfos[i].title;
+      var videoId = videoInfos[i].videoId;
+      var duration = videoInfos[i].duration;
+      var publishedAt = videoInfos[i].publishedAt;
+      var viewCount = videoInfos[i].viewCount;
+      var thumbnailsUrl = videoInfos[i].thumbnailsUrl;
+
+
+      duration = duration.substring(2, duration.length - 1).replace("M", ":").replace("H", ":");
+      if(duration.indexOf(":") < 0){
+        duration = "00:" + duration;
+      }
+      publishedAt = publishedAt.substring(0, publishedAt.length - 8);
+
+      result += "<li>" + title + 
+//        " : " + isClaimed(videoId) +
+         " (" + duration + ")<br />" +   //length_seocons
+//        "<a href=\"#\" \"https://www.youtube.com/watch?v=" +  items[0] + "\" >" +
+        "<a href=\"#\" onclick=\"openYouTube('" +   videoId + "')\">" +
+        "<img src=\"" +  thumbnailsUrl + "\">" +
+        "<img src=\"https://i.ytimg.com/vi/" +  videoId + "/1.jpg\">" +
+        "<img src=\"https://i.ytimg.com/vi/" +  videoId  + "/2.jpg\">" +
+        "<img src=\"https://i.ytimg.com/vi/" + videoId + "/3.jpg\">" +
+        "</a>"   +
+        "<br />" + 
+       "views: " + viewCount +
+        ", published: " + publishedAt + "&nbsp;&nbsp;&nbsp;" + 
+        "<br />" + 
+        "<input type=radio name=id_" + videoId +  " value=Ok> OK </input>" + 
+        "<input type=radio name=id_" + videoId +  " value=Block> ブロック </input>" + 
+        "<input type=radio name=id_" + videoId +  " value=Takedown>削除 </input>" + 
+        "<input type=radio name=id_" + videoId +  " value=OtherClaims>その他 </input>" +
+        "<br />" + 
+        "<br />" + 
+        "</li>";  
+      }
+      document.getElementById('list').innerHTML = result;   
+
+
+   }
+
+
   // Use a button to handle authentication the first time.
   function handleClientLoad() {
     gapi.client.setApiKey(cidApikey);
@@ -138,20 +228,20 @@
     return false;
   }
   // Load the API and make an API call.  Display the results on the screen.
-  function isClaimed(videoId, onBehalfOfContentOwner) {
+  function isClaimed(videoIds) {
 
     var restRequest = gapi.client.request({
       'path': '/youtube/partner/v1/claims',
-      'params': {'onBehalfOfContentOwner': onBehalfOfContentOwner, 'videoId': videoId}
+      'params': {'onBehalfOfContentOwner': onBehalfOfContentOwner, 'videoId': videoIds}
     });
     restRequest.then(function(resp) {
       if(resp.result.pageInfo.totalResults > 0) {
-      	isVideoClaimed[videoId] = true;
+        isVideoClaimed[videoId] = true;
       }
       else {
-	isVideoClaimed[videoId] = false;
+        isVideoClaimed[videoId] = false;
       } 
-	console.log(videoId + ":" +isVideoClaimed[videoId])
+      console.log(videoId + ":" +isVideoClaimed[videoId])
     }, function(reason) {
       console.log('Error: ' + reason.result.error.message);
     });
@@ -340,38 +430,38 @@ table tr td { border:1px solid; }
 
     for (var i = 0, f; f = files[i]; i++) {
   
-	  	var reader = new FileReader();
-	  	reader.readAsText(f);
-		  
-		 reader.onload = function(ev){
-		 var lines = reader.result.split('\n');
-		 var result = "<ul>";
-  		 for (var j = 1; j < lines.length; j++) {  //ignore first line
-  //		 for (var j = 0; j < 10; j++) {
-  			 var items = lines[j].split('\t');
-  			 var duration = Math.floor(items[5] / 60) + ":" + (items[5] % 60)
-  		 	result += "<li>" + items[1] + 
-  		 		 " (" + duration + ")<br />" +   //length_seocons
-  //				"<a href=\"#\" \"https://www.youtube.com/watch?v=" +  items[0] + "\" >" +
-  				"<a href=\"#\" onclick=\"openYouTube('" +   items[0] + "')\">" +
+      var reader = new FileReader();
+      reader.readAsText(f);
+      
+     reader.onload = function(ev){
+     var lines = reader.result.split('\n');
+     var result = "<ul>";
+       for (var j = 1; j < lines.length; j++) {  //ignore first line
+  //     for (var j = 0; j < 10; j++) {
+         var items = lines[j].split('\t');
+         var duration = Math.floor(items[5] / 60) + ":" + (items[5] % 60)
+        result += "<li>" + items[1] + 
+           " (" + duration + ")<br />" +   //length_seocons
+  //        "<a href=\"#\" \"https://www.youtube.com/watch?v=" +  items[0] + "\" >" +
+          "<a href=\"#\" onclick=\"openYouTube('" +   items[0] + "')\">" +
 
-  				"<img src=\"https://i.ytimg.com/vi/" +  items[0] + "/1.jpg\">" +
-  				"<img src=\"https://i.ytimg.com/vi/" +  items[0]  + "/2.jpg\">" +
-  				"<img src=\"https://i.ytimg.com/vi/" + items[0] + "/3.jpg\">" +
-  				"</a>"   +
-  				"views: " + items[3] +
-  				", published: " + items[4] + "&nbsp;&nbsp;&nbsp; OK </input>" + 
-  				"<input type=radio name=id_" + items[0] +  " value=Block> ブロック </input>" + 
-  				"<input type=radio name=id_" + items[0] +  " value=Takedown>削除 </input>" + 
-  				"<input type=radio name=id_" + items[0] +  " value=OtherClaims>その他 </input>" + 
-   				"";
-   				"</li>";
-  				
+          "<img src=\"https://i.ytimg.com/vi/" +  items[0] + "/1.jpg\">" +
+          "<img src=\"https://i.ytimg.com/vi/" +  items[0]  + "/2.jpg\">" +
+          "<img src=\"https://i.ytimg.com/vi/" + items[0] + "/3.jpg\">" +
+          "</a>"   +
+          "views: " + items[3] +
+          ", published: " + items[4] + "&nbsp;&nbsp;&nbsp; OK </input>" + 
+          "<input type=radio name=id_" + items[0] +  " value=Block> ブロック </input>" + 
+          "<input type=radio name=id_" + items[0] +  " value=Takedown>削除 </input>" + 
+          "<input type=radio name=id_" + items[0] +  " value=OtherClaims>その他 </input>" + 
+          "";
+          "</li>";
+          
 
-  		 }
-  		 	result += "</ul>"
-  		 document.getElementById('list').innerHTML = result;
-  	  }
+       }
+        result += "</ul>"
+       document.getElementById('list').innerHTML = result;
+      }
     }
   //  document.getElementById('list').innerHTML = '<ul>' + output.join('') + '</ul>';
   }
