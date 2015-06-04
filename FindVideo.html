@@ -141,7 +141,7 @@
       'params': {'onBehalfOfContentOwner': 'Toei_Animation_JP', 'videoId': 'GdXBpjtKFqU'}
     });
     restRequest.then(function(resp) {
-      console.log(resp.result);
+      console.log(resp.result.pageInfo.totalResults);
       if(resp.result.pageInfo.totalResults > 0) return true;
       else return false; 
 
