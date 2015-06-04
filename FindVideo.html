@@ -24,7 +24,7 @@
   var isVideoClaimed = {};
   var videoInfos = []; //  {videoId:$vdieoId ,publishDate: $publishDate, claimed: $claimed, ... }}
   var onBehalfOfContentOwner = "";
-  var claimLoaded = true; //debug
+  var claimLoaded = false; //debug
   var videoLoaded = false;
 
   function searchVideo(){
@@ -94,8 +94,6 @@
       for (i=0; i<json.items.length; i++) {
         var title = json.items[i].snippet.title;
         var videoId = json.items[i].id.videoId;
-//        isClaimed(videoId, onBehalfOfContentOwner);
-
         videoList  += json.items[i].id.videoId;
         videoList += ",";
         
@@ -105,6 +103,7 @@
 //      console.log("claimed" + isVideoClaimed.length);
       videoList = videoList.substring(0, videoList.length - 1); // last , causes exceeds 50 error
       getVideosInfo(videoList);
+      getClaimedVideos(videoList)
      };
 
    }
@@ -217,7 +216,6 @@
     if (authResult && !authResult.error) {
       authorizeButton.style.visibility = 'hidden';
  //     makeApiCall();
- //     isClaimed();
     } else {
       authorizeButton.style.visibility = '';
       authorizeButton.onclick = handleAuthClick;
@@ -228,7 +226,7 @@
     return false;
   }
   // Load the API and make an API call.  Display the results on the screen.
-  function isClaimed(videoIds) {
+  function getClaimedVideos(videoIds) {
 
     var restRequest = gapi.client.request({
       'path': '/youtube/partner/v1/claims',
