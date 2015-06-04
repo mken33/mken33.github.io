@@ -137,7 +137,7 @@
 
     var restRequest = gapi.client.request({
       'path': '/youtube/partner/v1/claims',
-      'params': {'onBehalfOfContentOwner': 'Toei_Animation_JP', 'videoId': 'GdXBpjtKFqU'}
+      'params': { 'videoId': 'GdXBpjtKFqU'}
     });
     restRequest.then(function(resp) {
       console.log(resp.result);
