@@ -67,10 +67,10 @@
       requestUrl = requestUrl + "&publishedAfter=" + publishedAfter;
     }                          
 
-
+    printVideoInfo();
     xhr.open("GET",requestUrl);
     xhr.send();
-    document.getElementById('list').innerHTML = requestUrl;   
+//    document.getElementById('list').innerHTML = requestUrl;   
     xhr.onload=function(ev){
       videoInfos = []; // reset
       var videoList = "";
@@ -155,6 +155,8 @@
       var publishedAt = videoInfos[i].publishedAt;
       var viewCount = videoInfos[i].viewCount;
       var thumbnailsUrl = videoInfos[i].thumbnailsUrl;
+      var channelId = videoInfos[i].channelId;
+      var channelTitle = videoInfos[i].channelTitle;
       var isClaimed = false;
       
       duration = duration.substring(2, duration.length - 1).replace("M", ":").replace("H", ":");
@@ -169,7 +171,10 @@
         }
       }
 
-      result += "<li>" + title + 
+      result += "<li>" +
+        "<a href=\"https://www.youtube.com/watch?v=">" + videoId + "\" target=\"_blank\">"
+        title + 
+        "</a>" + 
          " (" + duration + ")<br />" +   //length_seocons
 //        "<a href=\"#\" \"https://www.youtube.com/watch?v=" +  items[0] + "\" >" +
         "<a href=\"#\" onclick=\"openYouTube('" +   videoId + "')\">" +
@@ -179,16 +184,23 @@
         "<img src=\"https://i.ytimg.com/vi/" + videoId + "/3.jpg\">" +
         "</a>"   +
         "<br />" + 
-       "views: " + viewCount +
-        ", published: " + publishedAt + 
+       "視聴回数: " + viewCount +
+        ",&nbsp;&nbsp;&nbsp; 公開日: " + publishedAt + 
+        ",&nbsp;&nbsp;&nbsp; チャンネル: " +   
+        "<a href=\"https://www.youtube.com/channel/">" + channelId + "/\" target=\"_blank\">"
+        channelTitle + 
+        "</a>" + 
         "<br />";
         if(isClaimed) {
           result += "<span style=color:red>申し立て済み</span>";
         }
         else {
           result += "<input type=radio name=id_" + videoId +  " value=Ok> OK </input>" + 
+//            "<input type=radio name=id_" + videoId +  " value=Monetize> 収益化 </input>" + 
+            "<input type=radio name=id_" + videoId +  " value=Track> 追跡 </input>" + 
             "<input type=radio name=id_" + videoId +  " value=Block> ブロック </input>" + 
             "<input type=radio name=id_" + videoId +  " value=Takedown>削除 </input>" + 
+            "<input type=radio name=id_" + videoId +  " value=blacklistChannel>チャネルをブラックリスト</input>"
             "<input type=radio name=id_" + videoId +  " value=OtherClaims>その他 </input>"
             ;
         }
