@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>UI mock</title>
+<title>Find Videos</title>
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script> 
 <link type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/themes/redmond/jquery-ui.css" rel="stylesheet" />
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.js"></script> 
@@ -402,11 +402,11 @@ table tr td { border:1px solid; }
 
 <select name="type" id="type" size="1">
 <option value="q">検索して見つける</option>
-<option value="topicId">トピックIDで見つける</option>
+<option value="topicId">トピックIDから検索して見つける</option>
 </select>
 <input type="text" id="query" name="query" size="80">
 <br />
-オプション設定
+検索オプション<br />
 並べ替え: 
 <select name="order" id="order" size="1">
 <option value="date">アップロード日</option>
@@ -416,11 +416,12 @@ table tr td { border:1px solid; }
 <!--- <option value="title">タイトル</option> -->
 </select><br />
 アップロード日:(例: 2015-06-01T00:00:00Z) <br />
-<input type="text" name="publishedBefore" id="publishedBefore" size="22">より前<br />
+<input type="text" name="publishedBefore" id="publishedBefore" size="22">より前
 <input type="text" name="publishedAfter" id="publishedAfter" size="22">より後<br />
-
-動画の長さ:  (検索後にフィルタ)
-<input type="text" name="durationLonger" id="durationLonger" size="8">秒より長い<br />
+<br />
+表示オプション<br />
+動画の長さ:  
+<input type="text" name="durationLonger" id="durationLonger" size="8">秒より長い
 <input type="text" name="durationShorter" id="durationShorter" size="8">秒より短い<br />
 長さ順で表示する
 <input type="checkbox" name="sortDuration" id="sortDuration">
