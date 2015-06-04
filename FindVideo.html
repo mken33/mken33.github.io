@@ -17,8 +17,9 @@
 <script language="javascript"> 
 
   var cidApikey = "AIzaSyDBi5QOTpK5ID2d28W7PCeXTODIoHeJ_ts";
+  var isVideoClaimed = new Array();
 
-	function searchVideo(){
+  function searchVideo(){
 		var xhr= new XMLHttpRequest();
 		var dataApikey = "AIzaSyBloTHZ3LY41nw3wuZTUTx6kFBTE0G21lw";
     var type = document.getElementById("type").value;
@@ -101,7 +102,8 @@
       document.getElementById('list').innerHTML = result;   
 
 		};
-	}
+	console.log(isVideoClaimed);	
+   }
 
 
   var clientId = '113670351014-m4b78go9tqn40r6snf8090j074uc39j4.apps.googleusercontent.com';
@@ -143,12 +145,15 @@
     });
     restRequest.then(function(resp) {
       console.log(resp.result.pageInfo.totalResults);
-      if(resp.result.pageInfo.totalResults > 0) return true;
-      else return false; 
+      if(resp.result.pageInfo.totalResults > 0) {
+      	isVideoClaimed[videoId] = true;
+      }
+      else {
+	isVideoClaimed[videoId] = true;
+      } 
 
     }, function(reason) {
       console.log('Error: ' + reason.result.error.message);
-      return false;
     });
   }
 
