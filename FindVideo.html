@@ -232,7 +232,11 @@
       'params': {'onBehalfOfContentOwner': onBehalfOfContentOwner, 'videoId': videoIds}
     });
     restRequest.then(function(resp) {
-      console.log(resp.result);
+//      console.log(resp.result);
+    for(i = 0; i < resp.result.items.length; i++) {
+      console.log(resp.result.items[i].videoId)
+    }
+      
     }, function(reason) {
       console.log('Error: ' + reason.result.error.message);
     });
