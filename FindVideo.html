@@ -73,13 +73,13 @@
 			//JSONの解析
        json = JSON.parse(xhr.responseText);
       for (i=0; i<json.items.length; i++) {
+        var title = json.items[i].snippet.title;
+        var videoId = json.items[i].id.videoId;
       	if(i == 0) { //debug
 		console.log(videoId);
 		console.log(isClaimed(videoId));
 	}
 
-        var title = json.items[i].snippet.title;
-        var videoId = json.items[i].id.videoId;
         result += "<li>" + title + 
 //        " : " + isClaimed(videoId) +
         "<br />" + 
