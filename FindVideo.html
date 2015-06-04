@@ -155,7 +155,7 @@
 
    function printVideoInfo(){
     var result = "";
-    if(!claimLoaded  && !videoLoaded){
+    if(!claimLoaded  || !videoLoaded){
       document.getElementById('list').innerHTML = result;   
       return;      
     }
@@ -245,14 +245,16 @@
         }
         if(!alreadyListed) {
             claimedVideos.push(resp.result.items[i].videoId);
-            console.log("pushed:" + resp.result.items[i].videoId);
+//            console.log("pushed:" + resp.result.items[i].videoId);
         }
         
       }
       console.log(claimedVideos);
     }, function(reason) {
       console.log('Error: ' + reason.result.error.message);
-    });
+    }
+    claimLoaded = true;
+    );
   }
 
 
