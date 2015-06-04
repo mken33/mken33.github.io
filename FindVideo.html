@@ -73,7 +73,7 @@
 			//JSONの解析
        json = JSON.parse(xhr.responseText);
       for (i=0; i<json.items.length; i++) {
-      	if(i=0) { //debug
+      	if(i == 0) { //debug
 		console.log(videoId);
 		console.log(isClaimed(videoId));
 	}
