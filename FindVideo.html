@@ -145,7 +145,6 @@
       'params': {'onBehalfOfContentOwner': onBehalfOfContentOwner, 'videoId': videoId}
     });
     restRequest.then(function(resp) {
-      console.log(resp.result.pageInfo.totalResults);
       if(resp.result.pageInfo.totalResults > 0) {
       	isVideoClaimed[videoId] = true;
       }
