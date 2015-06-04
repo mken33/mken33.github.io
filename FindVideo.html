@@ -363,43 +363,20 @@ table tr td { border:1px solid; }
       }
       // Load the API and make an API call.  Display the results on the screen.
       function makeApiCall() {
-        var xhr= new XMLHttpRequest();
 
-        var requestUrl =  "https://www.googleapis.com/youtube/partner/v1/claims?onBehalfOfContentOwner=Toei_Animation_JP&videoId=GdXBpjtKFqU&key=AIzaSyDBi5QOTpK5ID2d28W7PCeXTODIoHeJ_ts";
-      xhr.open("GET",requestUrl);
-      xhr.send();
-      document.getElementById('list').innerHTML = requestUrl;   
-     xhr.onload=function(ev){
-       var result = "";
-
-     var result =  requestUrl + "<br />" + xhr.responseText;
-
-      document.getElementById('list').innerHTML = result;  
- 
- /*
-        gapi.client.request({
-          'path': '/youtube/partner/v1/claims?onBehalfOfContentOwner=Toei_Animation_JP&videoId=GdXBpjtKFqU',
-          'method': 'GET',
-          'body': resource,
-          'callback': writeResponse
+        var restRequest = gapi.client.request({
+          'path': '/youtube/partner/v1/claims',
+          'params': {'onBehalfOfContentOwner': 'Toei_Animation_JP', 'videoId': 'GdXBpjtKFqU'}
         });
-        // 
-        gapi.client.load('plus', 'v1', function() {
-          var request = gapi.client.plus.people.get({
-            'userId': 'me'
-          });
-          request.execute(function(resp) {
-            var heading = document.createElement('h4');
-            var image = document.createElement('img');
-            image.src = resp.image.url;
-            heading.appendChild(image);
-            heading.appendChild(document.createTextNode(resp.displayName));
-            document.getElementById('content').appendChild(heading);
-          });
+        restRequest.then(function(resp) {
+          console.log(resp.result);
+          document.getElementById('list').innerHTML = resp.result;   
+        }, function(reason) {
+          console.log('Error: ' + reason.result.error.message);
         });
-*/
+
       }
-     }
+    }
     </script>
     <script src="https://apis.google.com/js/client.js?onload=handleClientLoad"></script>
     <div id="content"></div>
