@@ -17,7 +17,7 @@
 <script language="javascript"> 
 
   var cidApikey = "AIzaSyDBi5QOTpK5ID2d28W7PCeXTODIoHeJ_ts";
-  var isVideoClaimed = new Array();
+  var isVideoClaimed = {};
 
   function searchVideo(){
 		var xhr= new XMLHttpRequest();
@@ -96,11 +96,11 @@
         "</li>"; 
       }
       document.getElementById('list').innerHTML = result;   
-      console.log("claimed" + isVideoClaimed.length);
-       for(j = 0; j  < isVideoClaimed.length; j++) {
-	console.log(isVideoClaimed[j]);	
+//      console.log("claimed" + isVideoClaimed.length);
+       for (var pname in isVideoClaimed){
+  	console.log(pname + ":" + isVideoClaimed[pname]);	
        }
-		};
+     };
 
    }
 
