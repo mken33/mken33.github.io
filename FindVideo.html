@@ -156,7 +156,7 @@
    function printVideoInfo(){
     var result = "";
     if(!claimLoaded  || !videoLoaded){
-      document.getElementById('list').innerHTML = result;   
+      document.getElementById('list').innerHTML = "Loading...";   
       return;      
     }
 
@@ -256,9 +256,11 @@
       }
       console.log(claimedVideos);
       claimLoaded = true;
+      printVideoInfo();
     }, function(reason) {
       console.log('Error: ' + reason.result.error.message);
       claimLoaded = true;
+      printVideoInfo();
 
     } );
   }
