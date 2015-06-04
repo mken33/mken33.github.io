@@ -76,10 +76,6 @@
       for (i=0; i<json.items.length; i++) {
         var title = json.items[i].snippet.title;
         var videoId = json.items[i].id.videoId;
-      	if(i == 0) { //debug
-		console.log(videoId);
-		console.log(isClaimed(videoId));
-	}
 
         result += "<li>" + title + 
 //        " : " + isClaimed(videoId) +
@@ -100,11 +96,11 @@
         "</li>"; 
       }
       document.getElementById('list').innerHTML = result;   
-
-		};
        for(i = 0; i  < isVideoClaimed.length; i++) {
 	console.log(isVideoClaimed[i]);	
        }
+		};
+
    }
 
 
