@@ -28,9 +28,7 @@
     var publishedBefore =  document.getElementById("publishedBefore").value;
     var publishedAfter =  document.getElementById("publishedAfter").value;    
 
-//    var onBehalfOfContentOwner = document.getElementById("publishedAfter").value;
-    var onBehalfOfContentOwner = "Toei_Animation_JP"; // debug
-    var videoId = "wcXUaGsOVAQ"; // debug
+    var onBehalfOfContentOwner = document.getElementById("onBehalfOfContentOwner").value;
     var viewClaimed = document.getElementById("viewClaimed").checked;
 
     if(viewClaimed) {
@@ -78,7 +76,11 @@
         var title = json.items[i].snippet.title;
         var videoId = json.items[i].id.videoId;
 
+         var isClaimed = isClaimed(videoId);
+
+
         result += "<li>" + title + 
+        " : " + isClaimed +
         "<br />" + 
 //         " (" + duration + ")<br />" +   //length_seocons
 //        "<a href=\"#\" \"https://www.youtube.com/watch?v=" +  items[0] + "\" >" +
@@ -122,7 +124,8 @@
     var authorizeButton = document.getElementById('authorize-button');
     if (authResult && !authResult.error) {
       authorizeButton.style.visibility = 'hidden';
-      makeApiCall();
+ //     makeApiCall();
+ //     isClaimed();
     } else {
       authorizeButton.style.visibility = '';
       authorizeButton.onclick = handleAuthClick;
@@ -133,17 +136,20 @@
     return false;
   }
   // Load the API and make an API call.  Display the results on the screen.
-  function makeApiCall() {
+  function isClaimed(videoId) {
 
     var restRequest = gapi.client.request({
       'path': '/youtube/partner/v1/claims',
-      'params': { 'videoId': 'GdXBpjtKFqU'}
+      'params': {'onBehalfOfContentOwner': 'Toei_Animation_JP', 'videoId': 'GdXBpjtKFqU'}
     });
     restRequest.then(function(resp) {
       console.log(resp.result);
-      document.getElementById('list').innerHTML = resp.result;   
+      if(resp.result.totalResults > 0) return true;
+      else return false; 
+
     }, function(reason) {
       console.log('Error: ' + reason.result.error.message);
+      return false;
     });
   }
 
