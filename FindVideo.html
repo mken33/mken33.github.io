@@ -167,7 +167,7 @@
       var publishedAt = videoInfos[i].publishedAt;
       var viewCount = videoInfos[i].viewCount;
       var thumbnailsUrl = videoInfos[i].thumbnailsUrl;
-      var claimedStatus = "";
+      var isClaimed = false;
       
       duration = duration.substring(2, duration.length - 1).replace("M", ":").replace("H", ":");
       if(duration.indexOf(":") < 0){
@@ -176,7 +176,7 @@
       publishedAt = publishedAt.substring(0, publishedAt.length - 8);
       for(j = 0; j < claimedVideos.length; j++) {
         if(claimedVideos[j] == videoId){
-          claimedStatus = "申し立て済み";
+          isClaimed  = true;
           break;
         }
       }
@@ -192,16 +192,19 @@
         "</a>"   +
         "<br />" + 
        "views: " + viewCount +
-        ", published: " + publishedAt + "&nbsp;&nbsp;&nbsp;" + 
-        "<br />" + 
-        claimedStatus + "<br />" + 
-        "<input type=radio name=id_" + videoId +  " value=Ok> OK </input>" + 
-        "<input type=radio name=id_" + videoId +  " value=Block> ブロック </input>" + 
-        "<input type=radio name=id_" + videoId +  " value=Takedown>削除 </input>" + 
-        "<input type=radio name=id_" + videoId +  " value=OtherClaims>その他 </input>" +
-        "<br />" + 
-        "<br />" + 
-        "</li>";  
+        ", published: " + publishedAt + 
+        "<br />";
+        if(isClaimed) {
+          result += "<span style=color:red>申し立て済み</span><br />" +  
+        }
+        else {
+          result += "<input type=radio name=id_" + videoId +  " value=Ok> OK </input>" + 
+            "<input type=radio name=id_" + videoId +  " value=Block> ブロック </input>" + 
+            "<input type=radio name=id_" + videoId +  " value=Takedown>削除 </input>" + 
+            "<input type=radio name=id_" + videoId +  " value=OtherClaims>その他 </input>"
+            ;
+        }
+        result +=  "<br /><br /></li>"; 
       }
       document.getElementById('list').innerHTML = result;   
 
