@@ -408,6 +408,10 @@ table tr td { border:1px solid; }
 アップロード日:(例: 2015-06-01T00:00:00Z) <br />
 <input type="text" name="publishedBefore" id="publishedBefore" size="22">より前
 <input type="text" name="publishedAfter" id="publishedAfter" size="22">より後<br />
+コンテンツ所有者:
+<input type="text" id="onBehalfOfContentOwner" name="onBehalfOfContentOwner" size="64">
+<!--Add a button for the user to click to initiate auth sequence -->
+<button id="authorize-button" style="visibility: hidden">認証</button>
 <br />
 表示オプション<br />
 動画の長さ:  
@@ -418,10 +422,6 @@ table tr td { border:1px solid; }
 <br />
 申し立て済み動画を表示:
 <input type="checkbox" name="viewClaimed" id="viewClaimed" checked="checked">
-コンテンツ所有者:
-<input type="text" id="onBehalfOfContentOwner" name="onBehalfOfContentOwner" size="64">
-<!--Add a button for the user to click to initiate auth sequence -->
-<button id="authorize-button" style="visibility: hidden">認証</button>
 
 <br />
 <br />
