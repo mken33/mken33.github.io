@@ -160,7 +160,6 @@
       return;      
     }
 
-
     for(i = 0; i < videoInfos.length; i++) {
       var title = videoInfos[i].title;
       var videoId = videoInfos[i].videoId;
@@ -168,16 +167,21 @@
       var publishedAt = videoInfos[i].publishedAt;
       var viewCount = videoInfos[i].viewCount;
       var thumbnailsUrl = videoInfos[i].thumbnailsUrl;
-
-
+      var claimedStatus = "";
+      
       duration = duration.substring(2, duration.length - 1).replace("M", ":").replace("H", ":");
       if(duration.indexOf(":") < 0){
         duration = "00:" + duration;
       }
       publishedAt = publishedAt.substring(0, publishedAt.length - 8);
+      for(j = 0; j < claimedVideos.length; j++) {
+        if(claimedVideos[j] == videoId){
+          claimedStatus = "申し立て済み";
+          break;
+        }
+      }
 
       result += "<li>" + title + 
-//        " : " + isClaimed(videoId) +
          " (" + duration + ")<br />" +   //length_seocons
 //        "<a href=\"#\" \"https://www.youtube.com/watch?v=" +  items[0] + "\" >" +
         "<a href=\"#\" onclick=\"openYouTube('" +   videoId + "')\">" +
@@ -190,6 +194,7 @@
        "views: " + viewCount +
         ", published: " + publishedAt + "&nbsp;&nbsp;&nbsp;" + 
         "<br />" + 
+        claimedStatus + "<br />" + 
         "<input type=radio name=id_" + videoId +  " value=Ok> OK </input>" + 
         "<input type=radio name=id_" + videoId +  " value=Block> ブロック </input>" + 
         "<input type=radio name=id_" + videoId +  " value=Takedown>削除 </input>" + 
@@ -250,11 +255,12 @@
         
       }
       console.log(claimedVideos);
+      claimLoaded = true;
     }, function(reason) {
       console.log('Error: ' + reason.result.error.message);
-    }
-    claimLoaded = true;
-    );
+      claimLoaded = true;
+
+    } );
   }
 
 
