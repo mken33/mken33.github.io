@@ -333,7 +333,7 @@
       printVideoInfo();
       return;
     }
-    
+
     var onBehalfOfContentOwner = document.getElementById("onBehalfOfContentOwner").value;
     var restRequest = gapi.client.request({
       'path': '/youtube/partner/v1/claims',
@@ -353,7 +353,7 @@
         }
         if(!alreadyListed) {
             claimedVideos.push(resp.result.items[i].videoId);
-//            console.log("pushed:" + resp.result.items[i].videoId);
+            console.log("pushed:" + resp.result.items[i].videoId);
         }
         
       }
