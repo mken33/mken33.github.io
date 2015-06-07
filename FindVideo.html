@@ -25,7 +25,6 @@
   var isVideoClaimed = {};
   var videoInfos = []; //  {videoId:$vdieoId ,publishDate: $publishDate, claimed: $claimed, ... }}
   var claimedVideos = [];
-  var onBehalfOfContentOwner = "";
   var claimLoaded = false; 
   var videoLoaded = false;
   var isLocal = true;
@@ -46,10 +45,10 @@
     var order = document.getElementById("order").value;
     var publishedBefore =  document.getElementById("publishedBefore").value;
     var publishedAfter =  document.getElementById("publishedAfter").value;    
-    var onBehalfOfContentOwner = document.getElementById("onBehalfOfContentOwner").value;
     var viewClaimed = document.getElementById("viewClaimed").checked;
 
-    document.getElementById('list').innerHTML = "Loading...";   
+    document.getElementById('list').innerHTML = "Loading...";  
+    document.getElementById('checkResult').innerHTML = ""; 
 
     var pageToken = "";
     var requestUrl = "https://www.googleapis.com/youtube/v3/search?part=snippet"
@@ -327,13 +326,15 @@
   }
   // Load the API and make an API call.  Display the results on the screen.
   function getClaimedVideos(videoIds) {
+
     if(isLocal == true ) {
       // do not run
       claimLoaded = true;
       printVideoInfo();
       return;
     }
-
+    
+    var onBehalfOfContentOwner = document.getElementById("onBehalfOfContentOwner").value;
     var restRequest = gapi.client.request({
       'path': '/youtube/partner/v1/claims',
       'params': {'onBehalfOfContentOwner': onBehalfOfContentOwner, 'videoId': videoIds}
