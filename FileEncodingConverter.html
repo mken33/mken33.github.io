@@ -6185,32 +6185,35 @@ Excelで編集したファイルをCSVで保存した時は、上の赤いエリ
 
 
   function handleFileSelect(files, mode) {
-
     for (var i = 0, f; f = files[i]; i++) {
-  
-      var filename = f.name;
-      var periodPos = filename.lastIndexOf(".");
-      if(periodPos > 0) {
-        if(mode == "SJISToUTF8") {
-          filename = filename.substring(0, periodPos) + "-utf8" +  filename.substring(periodPos);
-        } else if(mode ==  "UTF8ToSJIS") {
-          filename = filename.substring(0, periodPos) + "-sjis" +  filename.substring(periodPos);
-        }
-      }
-    console.log("file input: " + filentame);
+      downloadFile(f, mode);
+    }
+  }
 
-      var reader = new FileReader();
-//      reader.readAsBinaryString(f);
+  function downloadFile(f, mode) {
+    var filename = f.name;
+    var periodPos = filename.lastIndexOf(".");
+    console.log("period: " + periodPos);
+    if(periodPos > 0) {
       if(mode == "SJISToUTF8") {
-        reader.readAsText(f, "Shift-JIS");        
-      } else {
-        reader.readAsText(f);        
+        filename = filename.substring(0, periodPos) + "-utf8" +  filename.substring(periodPos);
+      } else if(mode ==  "UTF8ToSJIS") {
+        filename = filename.substring(0, periodPos) + "-sjis" +  filename.substring(periodPos);
       }
+    }
+
+    var reader = new FileReader();
+//      reader.readAsBinaryString(f);
+    if(mode == "SJISToUTF8") {
+      reader.readAsText(f, "Shift-JIS");        
+    } else {
+      reader.readAsText(f);        
+    }
       
-     reader.onload = function(ev){
-        var str2array = function(str) {
-          var array = [],i,il=str.length;
-          for (i=0; i<il; i++) array.push(str.charCodeAt(i));
+    reader.onload = function(ev){
+      var str2array = function(str) {
+        var array = [],i,il=str.length;
+        for (i=0; i<il; i++) array.push(str.charCodeAt(i));
           return array;
         };
         var uint8Array;
@@ -6223,10 +6226,8 @@ Excelで編集したファイルをCSVで保存した時は、上の赤いエリ
           var sjisArray = Encoding.convert(array, 'SJIS');
           uint8Array = new Uint8Array(sjisArray);          
         } 
-        console.log("uint8" + uint8Array)
+//        console.log("uint8" + uint8Array)
         var blob = new Blob([uint8Array], { type: 'text/csv' });
-
-
 
         if(window.navigator.msSaveBlob)
         {
@@ -6236,19 +6237,13 @@ Excelで編集したファイルをCSVで保存した時は、上の赤いエリ
             a.href = URL.createObjectURL(blob);
             a.target = '_blank';
             
-            console.log("file output: " + filentame);
             a.download = filename;
             a.click();
         } 
       }
     }
-  }
+  
 
 //  document.getElementById('files').addEventListener('change', handleFileSelect, false);
   </script>
 </body>
-
-
-
-
-
