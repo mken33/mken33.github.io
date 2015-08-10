@@ -6197,6 +6197,7 @@ Excelで編集したファイルをCSVで保存した時は、上の赤いエリ
           filename = filename.substring(0, periodPos) + "-sjis" +  filename.substring(periodPos);
         }
       }
+    console.log("file input: " + filentame);
 
       var reader = new FileReader();
 //      reader.readAsBinaryString(f);
@@ -6234,6 +6235,8 @@ Excelで編集したファイルをCSVで保存した時は、上の赤いエリ
             var a = document.createElement("a");
             a.href = URL.createObjectURL(blob);
             a.target = '_blank';
+            
+            console.log("file output: " + filentame);
             a.download = filename;
             a.click();
         } 
